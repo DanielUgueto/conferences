@@ -22,13 +22,11 @@ class ConferenceService implements ConferenceApi {
     List<ConferenceResponse> search(String search) {
         String text = (search == null || search.isBlank()) ? null : search.trim();
 
-        List<ConferenceResponse> responses = new ArrayList<>();
-
-        for (Conference conference : conferences.search(text)) {
-            responses.add(ConferenceResponse.from(conference));
-        }
-
-        return responses;
+        return conferences
+                .search(text)
+                .stream()
+                .map(ConferenceResponse::from)
+                .toList();
     }
 
     ConferenceResponse findById(Long id) {
@@ -42,22 +40,14 @@ class ConferenceService implements ConferenceApi {
 
     @Override
     public List<ConferenceInfo> findAll() {
-        List<ConferenceInfo> result = new ArrayList<>();
-
-        for (Conference conference : conferences.findAll(Sort.by("startDate", "name"))) {
-            result.add(ConferenceInfo.from(conference));
-        }
-
-        return result;
+        return conferences.findAll()
+                .stream()
+                .map(ConferenceInfo::from)
+                .toList();
     }
 
     private Conference findConference(Long id) {
-        Optional<Conference> result = conferences.findById(id);
-
-        if (result.isEmpty()) {
-            throw new NotFoundException("Conference not found: " + id);
-        }
-
-        return result.get();
+        return conferences.findById(id)
+                .orElseThrow(() -> new NotFoundException("Conference not found: " + id));
     }
 }

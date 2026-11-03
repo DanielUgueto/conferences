@@ -19,4 +19,10 @@ class TalkController {
     List<TalkResponse> findByConference(@PathVariable Long conferenceId) {
         return service.findByConference(conferenceId);
     }
+
+    @GetMapping("/api/conferences{conferenceId}/speakers")
+    List<String> speakers(@PathVariable Long conferenceId) {
+
+        return service.speakers(conferenceId);
+    }
 }

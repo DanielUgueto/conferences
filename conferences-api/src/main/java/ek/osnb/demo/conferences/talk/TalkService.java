@@ -30,4 +30,16 @@ class TalkService {
 
         return responses;
     }
+
+    public List<String> speakers(Long conferenceId) {
+        conferences.getConference(conferenceId);
+
+        return talks.findByConferenceIdOrderByStartsAt(conferenceId)
+                .stream()
+                .map(Talk::getSpeaker)
+                .distinct()
+                .sorted()
+                .toList();
+    }
+
 }
